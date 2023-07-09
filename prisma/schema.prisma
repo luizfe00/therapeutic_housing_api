@@ -9,3 +9,93 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  userName  String   @unique
+  firstName String
+  lastName  String
+  email     String   @unique
+  isAdmin   Boolean  @default(false)
+  document  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id           Int     @id @default(autoincrement())
+  street       String
+  streetNumber Int
+  zipCode      String
+  neighborhood String
+  city         String
+  state        String
+  complement   String?
+
+  residence Residence?
+}
+
+model Residence {
+  id   String @id @default(uuid())
+  name String
+
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId Int     @unique
+
+  residents  Resident[]
+  careTakers CareTaker[]
+}
+
+model Resident {
+  id             String     @id @default(uuid())
+  firstName      String
+  lastName       String
+  registerNumber Int        @unique() @default(autoincrement())
+  document       String     @unique
+  birthDate      String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  Income         Income[]
+  Shopping       Shopping[]
+
+  residenceId String
+  residence   Residence @relation(fields: [residenceId], references: [id])
+}
+
+model CareTaker {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  document  String   @unique
+  birthDate String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  residenceId String
+  residence   Residence @relation(fields: [residenceId], references: [id])
+}
+
+model Shopping {
+  id          String   @id @default(uuid())
+  product     String
+  value       Int
+  date        DateTime
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  residentId String
+  resident   Resident @relation(fields: [residentId], references: [id])
+}
+
+model Income {
+  id          String   @id @default(uuid())
+  value       Int
+  date        DateTime
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  residentId String
+  resident   Resident @relation(fields: [residentId], references: [id])
+}
