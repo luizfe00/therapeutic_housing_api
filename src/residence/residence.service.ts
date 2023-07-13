@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateResidenceDTO, EditResidenceDTO } from './dto/residence.dto';
+import {
+  AddressDTO,
+  CreateResidenceDTO,
+  EditResidenceDTO,
+} from './dto/residence.dto';
 import { CareTaker, Resident } from '@prisma/client';
 
 @Injectable()
@@ -31,19 +35,15 @@ export class ResidenceService {
             street,
             streetNumber,
             city,
-            name,
             neighborhood,
             state,
             zipCode,
             complement,
           };
-          const address = await prisma.address.create({
-            data: addressPayload,
-          });
 
           if (residents) {
             residenceResidents = await Promise.all(
-              residents.map((residentId) =>
+              residents?.map((residentId) =>
                 prisma.resident.findUnique({ where: { id: residentId } }),
               ),
             );
@@ -51,7 +51,7 @@ export class ResidenceService {
 
           if (careTakers) {
             residenceCareTakers = await Promise.all(
-              careTakers.map((careTakerId) =>
+              careTakers?.map((careTakerId) =>
                 prisma.careTaker.findUnique({ where: { id: careTakerId } }),
               ),
             );
@@ -61,17 +61,15 @@ export class ResidenceService {
             data: {
               name,
               address: {
-                connect: {
-                  id: address.id,
-                },
+                create: addressPayload,
               },
               careTakers: {
-                connect: residenceCareTakers.map((careTaker) => ({
+                connect: residenceCareTakers?.map((careTaker) => ({
                   id: careTaker.id,
                 })),
               },
               residents: {
-                connect: residenceResidents.map((resident) => ({
+                connect: residenceResidents?.map((resident) => ({
                   id: resident.id,
                 })),
               },
@@ -128,7 +126,7 @@ export class ResidenceService {
 
           if (careTakers) {
             residenceCareTakers = await Promise.all(
-              careTakers.map((careTakerId) =>
+              careTakers?.map((careTakerId) =>
                 prisma.careTaker.findUnique({ where: { id: careTakerId } }),
               ),
             );
@@ -136,7 +134,7 @@ export class ResidenceService {
 
           if (residents) {
             residenceResidents = await Promise.all(
-              residents.map((residentId) =>
+              residents?.map((residentId) =>
                 prisma.resident.findUnique({ where: { id: residentId } }),
               ),
             );
@@ -146,12 +144,12 @@ export class ResidenceService {
             where: { id: residenceId },
             data: {
               careTakers: {
-                connect: residenceCareTakers.map((careTaker) => ({
+                connect: residenceCareTakers?.map((careTaker) => ({
                   id: careTaker.id,
                 })),
               },
               residents: {
-                connect: residenceResidents.map((resident) => ({
+                connect: residenceResidents?.map((resident) => ({
                   id: resident.id,
                 })),
               },
@@ -165,6 +163,43 @@ export class ResidenceService {
       return transaction;
     } catch (error) {
       console.log('Error updating Residence', error);
+      throw error;
+    }
+  }
+
+  async getAll() {
+    return await this.prismaService.residence.findMany({
+      include: { address: true, careTakers: true, residents: true },
+    });
+  }
+
+  async deleteResidence(id: string) {
+    try {
+      await this.prismaService.residence.delete({ where: { id: id } });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteAddress(id: number) {
+    try {
+      await this.prismaService.address.delete({ where: { id: id } });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateAddress(payload: AddressDTO) {
+    try {
+      const dataPayload = { ...payload };
+      delete dataPayload.addressId;
+      await this.prismaService.address.update({
+        where: {
+          id: payload.addressId,
+        },
+        data: dataPayload,
+      });
+    } catch (error) {
       throw error;
     }
   }

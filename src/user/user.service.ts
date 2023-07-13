@@ -36,15 +36,47 @@ export class UserService {
         where: {
           id: userId,
         },
-        data: {
-          ...payload,
-        },
+        data: payload,
       });
 
-      delete user.password;
-      return user;
+      const isComplete =
+        user.document &&
+        user.email &&
+        user.firstName &&
+        user.lastName &&
+        user.userName;
+
+      if (user.isComplete && isComplete) return;
+      if (user.isComplete && !isComplete) {
+        await this.prismaService.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            isComplete: false,
+          },
+        });
+        return;
+      }
+      if (!user.isComplete && isComplete)
+        await this.prismaService.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            isComplete: true,
+          },
+        });
     } catch (error) {
       return error;
     }
+  }
+
+  async getAll() {
+    return await this.prismaService.user.findMany();
+  }
+
+  async deleteUser(id: string) {
+    return await this.prismaService.user.delete({ where: { id } });
   }
 }

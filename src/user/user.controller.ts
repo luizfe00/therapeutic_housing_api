@@ -3,6 +3,8 @@ import {
   Get,
   Patch,
   Param,
+  Body,
+  Delete,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -26,13 +28,23 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param() params: any) {
-    return this.userService.findOne(params.id);
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('edit')
-  editUser(@GetUser('id') userId: string, payload: UserEditDTO) {
+  editUser(@GetUser('id') userId: string, @Body() payload: UserEditDTO) {
     return this.userService.editUser(userId, payload);
+  }
+
+  @Get('all')
+  getAllUsers() {
+    return this.userService.getAll();
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id') userId: string) {
+    return this.userService.deleteUser(userId);
   }
 }

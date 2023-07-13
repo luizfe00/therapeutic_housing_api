@@ -57,8 +57,8 @@ model Resident {
   birthDate      String
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
-  Income         Income[]
-  Shopping       Shopping[]
+  income         Income[]
+  shopping       Shopping[]
 
   residenceId String
   residence   Residence @relation(fields: [residenceId], references: [id])
