@@ -6,6 +6,9 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ResidenceModule } from './residence/residence.module';
 import { ResidentModule } from './resident/resident.module';
+import { CaretakerModule } from './caretaker/caretaker.module';
+import { ShoppingModule } from './shopping/shopping.module';
+import { IncomeModule } from './income/income.module';
 
 @Module({
   imports: [
@@ -17,6 +20,9 @@ import { ResidentModule } from './resident/resident.module';
     PrismaModule,
     ResidenceModule,
     ResidentModule,
+    CaretakerModule,
+    ShoppingModule,
+    IncomeModule,
   ],
   providers: [PrismaService],
 })
