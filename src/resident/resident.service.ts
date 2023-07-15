@@ -50,7 +50,7 @@ export class ResidentService {
 
   async getAll() {
     return await this.prismaService.resident.findMany({
-      include: { residence: true },
+      include: { residence: true, income: true, shopping: true },
     });
   }
 
@@ -62,6 +62,8 @@ export class ResidentService {
         },
         include: {
           residence: true,
+          income: true,
+          shopping: true,
         },
       });
     } catch (error) {

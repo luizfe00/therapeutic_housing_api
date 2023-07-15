@@ -17,14 +17,14 @@ import { CreateCareTakerDTO, EditCareTakerDTO } from './dto/caretaker.dto';
 export class CaretakerController {
   constructor(private careTakerService: CaretakerService) {}
 
-  @Get(':id')
-  findOne(@Param('id') careTakerId: string) {
-    return this.careTakerService.findOne(careTakerId);
-  }
-
   @Get('all')
   getAll() {
     return this.careTakerService.getAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') careTakerId: string) {
+    return this.careTakerService.findOne(careTakerId);
   }
 
   @Post('create')

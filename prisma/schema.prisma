@@ -45,7 +45,7 @@ model Residence {
   addressId Int     @unique
 
   residents  Resident[]
-  careTakers CareTaker[]
+  careTakers CareTaker[] @relation("CaretakerResidence")
 }
 
 model Resident {
@@ -73,15 +73,14 @@ model CareTaker {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  residenceId String
-  residence   Residence @relation(fields: [residenceId], references: [id])
+  residence Residence[] @relation("CaretakerResidence")
 }
 
 model Shopping {
   id          String   @id @default(uuid())
   product     String
-  value       Int
-  date        DateTime
+  value       Float
+  date        String
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -92,8 +91,8 @@ model Shopping {
 
 model Income {
   id          String   @id @default(uuid())
-  value       Int
-  date        DateTime
+  value       Float
+  date        String
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

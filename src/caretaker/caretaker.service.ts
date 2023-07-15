@@ -8,48 +8,59 @@ export class CaretakerService {
 
   async create(payload: CreateCareTakerDTO) {
     try {
-      const user = await this.prismaService.careTaker.create({
-        data: {
-          birthDate: payload.birthDate,
-          document: payload.document,
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          residence: {
-            connect: {
-              id: payload.residenceId,
-            },
-          },
-        },
+      const caretakerData = {
+        birthDate: payload.birthDate,
+        document: payload.document,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+      };
+
+      if (payload?.residenceIds) {
+        caretakerData['residence'] = {
+          connect: payload.residenceIds.map((residenceId) => ({
+            id: residenceId,
+          })),
+        };
+      }
+
+      const careTaker = await this.prismaService.careTaker.create({
+        data: caretakerData,
       });
 
-      return user;
+      return careTaker;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 
   async edit(id: string, payload: EditCareTakerDTO) {
     try {
+      const caretakerData = {
+        birthDate: payload?.birthDate,
+        document: payload?.document,
+        firstName: payload?.firstName,
+        lastName: payload?.lastName,
+      };
+
+      if (payload?.residenceIds) {
+        caretakerData['residence'] = {
+          connect: payload.residenceIds.map((residenceId) => ({
+            id: residenceId,
+          })),
+        };
+      }
+
       const careTaker = await this.prismaService.careTaker.update({
         where: {
           id,
         },
-        data: {
-          birthDate: payload?.birthDate,
-          document: payload?.document,
-          firstName: payload?.firstName,
-          lastName: payload?.lastName,
-          residence: {
-            connect: {
-              id: payload.residenceId,
-            },
-          },
-        },
+        data: caretakerData,
+        include: { residence: true },
       });
 
       return careTaker;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 

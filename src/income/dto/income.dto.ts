@@ -2,6 +2,7 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
   IsUUID,
@@ -14,7 +15,7 @@ export class CreateIncomeDTO {
 
   @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
 
   @IsOptional()
   @IsString()
@@ -30,7 +31,7 @@ export class EditIncomeDTO {
   @IsOptional()
   @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
 
   @IsOptional()
   @IsString()
@@ -50,7 +51,7 @@ export class QueryIncomeDTO {
   endDate: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   value: string;
 }

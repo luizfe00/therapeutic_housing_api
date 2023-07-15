@@ -18,7 +18,7 @@ export class CreateShoppingDTO {
 
   @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
 
   @IsOptional()
   @IsString()
@@ -44,7 +44,7 @@ export class EditShoppingDTO {
   @IsOptional()
   @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
 
   @IsOptional()
   @IsString()

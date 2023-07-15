@@ -24,10 +24,9 @@ export class ShoppingService {
           },
         },
       });
-
       return shopping;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 
@@ -43,18 +42,11 @@ export class ShoppingService {
         where: {
           id: shoppingId,
         },
-        data: {
-          ...shoppingPayload,
-          resident: {
-            connect: {
-              id: payload.residentId,
-            },
-          },
-        },
+        data: shoppingPayload,
       });
       return shopping;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 

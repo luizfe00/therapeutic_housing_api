@@ -48,20 +48,25 @@ export class IncomeService {
     endDate: string,
     value?: string,
   ) {
+    const queryWhereData = {
+      resident: {
+        id: residentId,
+      },
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    };
+
+    if (value) {
+      queryWhereData['value'] = {
+        lte: Number(value),
+      };
+    }
+
     try {
       return this.prismaService.income.findMany({
-        where: {
-          resident: {
-            id: residentId,
-          },
-          date: {
-            gte: startDate,
-            lte: endDate,
-          },
-          value: {
-            lte: Number(value),
-          },
-        },
+        where: queryWhereData,
       });
     } catch (error) {
       return error;

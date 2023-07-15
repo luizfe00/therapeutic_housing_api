@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
 
 export class CreateCareTakerDTO {
   @IsString()
@@ -17,9 +17,9 @@ export class CreateCareTakerDTO {
   @IsNotEmpty()
   birthDate: string;
 
-  @IsString()
-  @IsNotEmpty()
-  residenceId: string;
+  @IsOptional()
+  @IsArray()
+  residenceIds: string[];
 }
 
 export class EditCareTakerDTO {
@@ -44,7 +44,6 @@ export class EditCareTakerDTO {
   birthDate?: string;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  residenceId: string;
+  @IsArray()
+  residenceIds: string[];
 }
