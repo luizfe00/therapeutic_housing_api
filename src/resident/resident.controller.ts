@@ -9,10 +9,13 @@ import {
   HttpCode,
   HttpStatus,
   Delete,
+  Query,
+  Res,
 } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guard';
 import { ResidentService } from './resident.service';
 import { CreateResidentDTO, EditResidentDTO } from './dto/resident.dto';
+import { Response } from 'express';
 
 @UseGuards(JWTGuard)
 @Controller('resident')
@@ -31,8 +34,8 @@ export class ResidentController {
   }
 
   @Get('all')
-  getAll() {
-    return this.residentService.getAll();
+  getAll(@Query() query: { startDate: string; endDate: string }) {
+    return this.residentService.getAll(query.startDate, query.endDate);
   }
 
   @Get('/:id')
@@ -43,5 +46,22 @@ export class ResidentController {
   @Delete('/:id')
   deleteResident(@Param('id') residentId: string) {
     return this.residentService.deleteResident(residentId);
+  }
+
+  @Post('parseCsv')
+  parseResidents(@Query() query: { startDate: string; endDate: string }) {
+    return this.residentService.parseResidents(query.startDate, query.endDate);
+  }
+
+  @Post('parsePDF')
+  parsePDF(
+    @Query() query: { startDate: string; endDate: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment;`,
+    });
+    return this.residentService.parsePDF(query.startDate, query.endDate);
   }
 }

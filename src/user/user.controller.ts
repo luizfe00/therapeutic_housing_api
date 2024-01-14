@@ -13,7 +13,6 @@ import {
 import { JWTGuard } from 'src/auth/guard';
 import { UserService } from './user.service';
 import { GetUser } from './decorator/get-user';
-import { User } from '@prisma/client';
 import { UserEditDTO } from './dto/user.dto';
 
 @UseGuards(JWTGuard)
@@ -22,7 +21,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('info')
-  getUserInfo(@GetUser() user: User) {
+  getUserInfo(@GetUser() user: any) {
     delete user.password;
     return user;
   }

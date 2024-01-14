@@ -65,9 +65,15 @@ export class IncomeService {
     }
 
     try {
-      return this.prismaService.income.findMany({
+      const incomeRecords = await this.prismaService.income.findMany({
         where: queryWhereData,
       });
+      const totalValue = incomeRecords.reduce(
+        (total, income) => total + income.value,
+        0,
+      );
+      incomeRecords['total_value'] = totalValue;
+      return incomeRecords;
     } catch (error) {
       return error;
     }
